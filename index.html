@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Rolling Wrench AI Pro</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0f14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Rolling Wrench AI">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="inferno" data-layout="command">
+<div class="app-bg"></div>
+<header class="topbar glass">
+  <button class="icon" onclick="toggleMenu()">☰</button>
+  <button class="icon" onclick="goBack()">←</button>
+  <div class="brand">
+    <div class="logoMark">RW</div>
+    <div><b>ROLLING WRENCH AI</b><span>SHOP + ROADSIDE COMMAND CENTER</span></div>
+  </div>
+  <div class="statusPill" id="netStatus">● READY</div>
+  <button class="icon" onclick="showScreen('settings')">⚙</button>
+</header>
+<aside id="drawer" class="drawer glass">
+  <button onclick="showScreen('home')">🏠 Home</button>
+  <button onclick="showScreen('parts')">🔎 Parts + Suppliers</button>
+  <button onclick="showScreen('quote')">⚡ Quick Quote</button>
+  <button onclick="showScreen('invoice')">💵 Invoice + Signature</button>
+  <button onclick="showScreen('scan')">📷 OCR Scan</button>
+  <button onclick="showScreen('clocks')">⏱ 3 Job Clocks</button>
+  <button onclick="showScreen('finance')">📊 Finances</button>
+  <button onclick="showScreen('customers')">👥 Customers / Trucks</button>
+  <button onclick="showScreen('settings')">⚙ Settings / Themes</button>
+  <button onclick="toggleMenu()">✖ Close</button>
+</aside>
+<main class="shell">
+  <section class="modebar glass">
+    <button id="shopBtn" class="mode active" onclick="setMode('shop')">🏢 SHOP MODE</button>
+    <button id="roadBtn" class="mode" onclick="setMode('roadside')">🚨 ROADSIDE MODE</button>
+    <div class="truckMini"><small>ACTIVE UNIT</small><b id="activeUnitMini">No unit saved</b></div>
+  </section>
+
+  <section id="home" class="screen active">
+    <div class="hero glass">
+      <div>
+        <h1>Built for the shop. Ready for the road.</h1>
+        <p>Parts lookup, supplier search, quick quotes, invoices, customer signatures, OCR receipts, clocks, and profit tracking.</p>
+      </div>
+      <div class="heroPanel">
+        <b id="todayRevenue">$0.00</b><span>Estimated open-ticket revenue</span>
+      </div>
+    </div>
+    <div class="quickAsk glass">
+      <textarea id="aiQuestion" placeholder="Ask Rolling Wrench AI... example: 2019 X15 water pump quote, SPN 5246 derate, find part, write customer message"></textarea>
+      <div class="buttonRow compact">
+        <button class="primary" onclick="askAI()">SEND</button>
+        <button onclick="writeProfessional('aiQuestion')">WRITE PROFESSIONAL</button>
+        <button onclick="clearField('aiQuestion')">CLEAR</button>
+      </div>
+      <div id="aiOut" class="output">Ready.</div>
+    </div>
+    <div class="tileGrid">
+      <button class="tile" onclick="showScreen('parts')"><i>🔎</i><b>PARTS LOOKUP</b><span>OEM, cross refs, suppliers</span></button>
+      <button class="tile" onclick="showScreen('quote')"><i>⚡</i><b>QUICK QUOTE</b><span>Labor, parts, service call</span></button>
+      <button class="tile" onclick="showScreen('invoice')"><i>💵</i><b>INVOICE + SIGN</b><span>Customer signs on phone</span></button>
+      <button class="tile" onclick="showScreen('scan')"><i>📷</i><b>OCR SCAN</b><span>Receipts + part labels</span></button>
+      <button class="tile" onclick="showScreen('clocks')"><i>⏱</i><b>3 JOB CLOCKS</b><span>Start, pause, stop</span></button>
+      <button class="tile" onclick="showScreen('finance')"><i>📊</i><b>FINANCES</b><span>Profit + break-even</span></button>
+      <button class="tile" onclick="showScreen('customers')"><i>👥</i><b>CUSTOMERS</b><span>Truck history</span></button>
+      <button class="tile" onclick="showScreen('settings')"><i>🎨</i><b>THEMES</b><span>Layouts + color options</span></button>
+    </div>
+  </section>
+
+  <section id="parts" class="screen">
+    <div class="screenHead"><h2>Parts Lookup + Suppliers</h2><div><button onclick="goBack()">BACK</button><button onclick="clearParts()">CLEAR</button><button onclick="help('parts')">HELP</button></div></div>
+    <div class="cardGrid two">
+      <div class="card glass">
+        <label>VIN / UNIT<input id="vin" placeholder="VIN or unit number"></label>
+        <div class="buttonRow"><button onclick="decodeVin()">DECODE VIN</button><button onclick="saveTruck()">SAVE TRUCK</button></div>
+        <div id="vinOut" class="output small">VIN decoder ready.</div>
+      </div>
+      <div class="card glass">
+        <label>Part / Job Search<textarea id="partQ" placeholder="Example: X15 water pump, 4376357, DD15 NOx sensor"></textarea></label>
+        <div class="buttonRow"><button class="primary" onclick="lookupPart()">LOOKUP PART</button><button onclick="addPartToQuote()">ADD TO QUOTE</button></div>
+        <div id="partOut" class="output small">Part results appear here.</div>
+      </div>
+    </div>
+    <div class="supplierDeck glass">
+      <b>Supplier Search</b>
+      <button onclick="supplierSearch('fleetpride')">FleetPride</button><button onclick="supplierSearch('truckpro')">TruckPro</button><button onclick="supplierSearch('napa')">NAPA</button><button onclick="supplierSearch('oreilly')">O'Reilly</button><button onclick="supplierSearch('cummins')">Cummins</button><button onclick="supplierSearch('google')">Google</button>
+    </div>
+  </section>
+
+  <section id="quote" class="screen">
+    <div class="screenHead"><h2>Quick Quote Builder</h2><div><button onclick="goBack()">BACK</button><button onclick="clearQuote()">CLEAR</button><button onclick="help('quote')">HELP</button></div></div>
+    <div class="card glass">
+      <div class="formGrid">
+        <label>Customer<input id="quoteCustomer" placeholder="Customer / company"></label>
+        <label>Phone<input id="quotePhone" placeholder="Customer phone"></label>
+        <label>Truck / Unit<input id="quoteTruck" placeholder="2019 International LT / Unit #4"></label>
+        <label>Labor Hours<input id="quoteHours" type="number" step="0.1" value="1"></label>
+        <label>Labor Rate<input id="quoteRate" type="number" value="135"></label>
+        <label>Parts Cost<input id="quoteParts" type="number" step="0.01" value="0"></label>
+        <label>Parts Markup %<input id="quoteMarkup" type="number" value="15"></label>
+        <label class="toggleLine"><input id="serviceToggle" type="checkbox" checked onchange="buildQuote()"> Service Call ON</label>
+        <label>Service Call<input id="serviceAmount" type="number" value="250"></label>
+        <label>Tax %<input id="taxRate" type="number" value="7"></label>
+      </div>
+      <label>Work Description<textarea id="quoteDesc" placeholder="Describe work, parts, diagnosis, notes"></textarea></label>
+      <div class="buttonRow"><button class="primary" onclick="buildQuote()">BUILD QUOTE</button><button onclick="writeProfessional('quoteDesc')">WRITE PROFESSIONAL</button><button onclick="sendQuoteText()">TEXT QUOTE</button></div>
+    </div>
+    <div id="quoteOut" class="documentPreview">Quote preview appears here.</div>
+  </section>
+
+  <section id="invoice" class="screen">
+    <div class="screenHead"><h2>Invoice + Customer Signature</h2><div><button onclick="goBack()">BACK</button><button onclick="clearInvoice()">CLEAR</button><button onclick="help('invoice')">HELP</button></div></div>
+    <div class="cardGrid two">
+      <div class="card glass">
+        <div class="formGrid">
+          <label>Customer<input id="invCustomer"></label><label>Phone<input id="invPhone"></label><label>Truck<input id="invTruck"></label><label>VIN<input id="invVin"></label><label>Labor Hours<input id="invHours" type="number" step="0.1" value="1"></label><label>Labor Rate<input id="invRate" type="number" value="135"></label><label>Parts Total<input id="invParts" type="number" step="0.01" value="0"></label><label class="toggleLine"><input id="invServiceToggle" type="checkbox" checked> Service Call ON</label><label>Service Call<input id="invService" type="number" value="250"></label><label>Tax %<input id="invTax" type="number" value="7"></label><label>Card Fee %<input id="cardFee" type="number" value="0"></label>
+        </div>
+        <label>Work Performed<textarea id="invDesc"></textarea></label>
+        <div class="buttonRow"><button class="primary" onclick="buildInvoice()">BUILD INVOICE</button><button onclick="copyFromQuote()">COPY QUOTE</button><button onclick="sendInvoiceText()">TEXT INVOICE</button></div>
+      </div>
+      <div class="card glass signatureCard">
+        <h3>Customer Signature</h3>
+        <p>Customer/driver authorizes work and confirms receipt.</p>
+        <canvas id="sigCanvas" width="700" height="260"></canvas>
+        <div class="buttonRow"><button onclick="clearSignature()">CLEAR SIGNATURE</button><button onclick="saveSignature()">SAVE SIGNATURE</button></div>
+        <div id="sigStatus" class="output small">No signature saved.</div>
+      </div>
+    </div>
+    <div id="invoiceOut" class="documentPreview">Invoice preview appears here.</div>
+  </section>
+
+  <section id="scan" class="screen">
+    <div class="screenHead"><h2>OCR Receipt / Part Number Scanner</h2><div><button onclick="goBack()">BACK</button><button onclick="clearScan()">CLEAR</button><button onclick="help('scan')">HELP</button></div></div>
+    <div class="card glass">
+      <label class="fileBig">📷 Take / Upload Receipt or Part Label<input id="scanFile" type="file" accept="image/*" capture="environment" onchange="previewScan(event)"></label>
+      <img id="scanPreview" class="preview" alt="">
+      <div class="buttonRow"><button class="primary" onclick="runOCR()">SCAN PHOTO</button><button onclick="parseReceipt()">PULL PART + PRICE</button><button onclick="addScanToQuote()">ADD TO QUOTE</button></div>
+      <div class="formGrid"><label>Vendor<input id="scanVendor"></label><label>Part Number<input id="scanPart"></label><label>Qty<input id="scanQty" type="number" value="1"></label><label>Price<input id="scanPrice" type="number" step="0.01" value="0"></label></div>
+      <label>Raw OCR Text<textarea id="scanText"></textarea></label>
+      <div id="scanOut" class="output">OCR ready.</div>
+    </div>
+  </section>
+
+  <section id="clocks" class="screen">
+    <div class="screenHead"><h2>3 Independent Job Clocks</h2><div><button onclick="goBack()">BACK</button><button onclick="resetAllClocks()">CLEAR</button><button onclick="help('clocks')">HELP</button></div></div>
+    <div class="clockDeck" id="clockDeck"></div>
+  </section>
+
+  <section id="finance" class="screen">
+    <div class="screenHead"><h2>Finance Dashboard</h2><div><button onclick="goBack()">BACK</button><button onclick="calcFinance()">REFRESH</button><button onclick="help('finance')">HELP</button></div></div>
+    <div class="card glass">
+      <div class="formGrid"><label>Monthly Rent<input id="rent" type="number" value="1500"></label><label>Insurance<input id="insurance" type="number" value="145"></label><label>Electric<input id="electric" type="number" value="250"></label><label>Other Expenses<input id="otherExp" type="number" value="0"></label><label>Weekly Labor Hours<input id="weekHours" type="number" value="20"></label><label>Labor Rate<input id="financeRate" type="number" value="135"></label><label>Parts Profit This Week<input id="partsProfit" type="number" value="0"></label></div>
+      <button class="primary" onclick="calcFinance()">CALCULATE PROFIT</button>
+    </div>
+    <div id="financeOut" class="financeCards"></div>
+  </section>
+
+  <section id="customers" class="screen">
+    <div class="screenHead"><h2>Customers + Truck History</h2><div><button onclick="goBack()">BACK</button><button onclick="clearCustomerForm()">CLEAR</button><button onclick="help('customers')">HELP</button></div></div>
+    <div class="card glass"><div class="formGrid"><label>Company / Customer<input id="custName"></label><label>Phone<input id="custPhone"></label><label>Truck / Unit<input id="custTruck"></label><label>VIN<input id="custVin"></label></div><label>Notes<textarea id="custNotes"></textarea></label><div class="buttonRow"><button class="primary" onclick="saveCustomer()">SAVE CUSTOMER/TRUCK</button><button onclick="loadCustomers()">LOAD SAVED</button></div></div>
+    <div id="customersOut" class="output">Saved customers show here.</div>
+  </section>
+
+  <section id="settings" class="screen">
+    <div class="screenHead"><h2>Settings + Design Options</h2><div><button onclick="goBack()">BACK</button><button onclick="saveSettings()">SAVE</button><button onclick="help('settings')">HELP</button></div></div>
+    <div class="cardGrid two">
+      <div class="card glass"><h3>Shop Settings</h3><div class="formGrid"><label>Shop Name<input id="shopName" value="Rolling Wrench Diesel LLC"></label><label>Phone<input id="shopPhone" value="260-502-6222"></label><label>Website<input id="shopWebsite" value="www.rollingwrenchdiesel.com"></label><label>Default Labor Rate<input id="setRate" type="number" value="135"></label><label>Default Service Call<input id="setService" type="number" value="250"></label><label>Default Markup %<input id="setMarkup" type="number" value="15"></label><label>Backend URL<input id="backendUrl" value="https://rolling-wrench-ai-backend.onrender.com"></label><label>Supabase URL<input id="supabaseUrl" value="https://uxpkqwcmvtqvubibbrek.supabase.co"></label></div><div class="buttonRow"><button onclick="testBackend()">TEST BACKEND</button><button onclick="testSupabase()">TEST SUPABASE</button></div><div id="settingsOut" class="output small">Settings ready.</div></div>
+      <div class="card glass"><h3>Look + Layout</h3><label>Color Theme<select id="themeSelect" onchange="applyTheme(this.value)"><option value="inferno">Inferno Orange</option><option value="toolbox">Toolbox Red</option><option value="diesel">Diesel Blue</option><option value="night">Night Ops Green</option><option value="steel">Chrome Steel</option><option value="purple">Electric Purple</option></select></label><label>Layout<select id="layoutSelect" onchange="applyLayout(this.value)"><option value="command">Command Center</option><option value="cards">Big Cards</option><option value="compact">Compact Shop</option></select></label><div class="themePreview"><span></span><span></span><span></span></div><button class="primary" onclick="saveSettings()">SAVE DESIGN</button></div>
+    </div>
+  </section>
+</main>
+<nav class="bottomNav glass">
+  <button onclick="showScreen('home')">⌂<span>HOME</span></button>
+  <button onclick="showScreen('parts')">🔎<span>PARTS</span></button>
+  <button onclick="showScreen('quote')">⚡<span>QUOTE</span></button>
+  <button onclick="showScreen('invoice')">💵<span>INVOICE</span></button>
+  <button onclick="showScreen('settings')">•••<span>MORE</span></button>
+</nav>
+<script src="app.js"></script>
+</body>
+</html>

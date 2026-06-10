@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 192 192">
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ff7a18"/><stop offset="1" stop-color="#111827"/></linearGradient></defs>
+  <rect width="192" height="192" rx="42" fill="#070b10"/>
+  <rect x="10" y="10" width="172" height="172" rx="34" fill="url(#g)" opacity=".96"/>
+  <path d="M48 122 L86 84 L108 106 L70 144 Z" fill="#fff" opacity=".95"/>
+  <circle cx="121" cy="70" r="29" fill="none" stroke="#fff" stroke-width="14"/>
+  <text x="96" y="108" text-anchor="middle" font-family="Arial Black,Arial" font-size="40" fill="#070b10">RW</text>
+  <text x="96" y="137" text-anchor="middle" font-family="Arial" font-size="13" font-weight="700" fill="#fff">DIESEL</text>
+</svg>

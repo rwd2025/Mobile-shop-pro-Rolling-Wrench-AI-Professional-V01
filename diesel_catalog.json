@@ -1,0 +1,160 @@
+{
+  "cummins": {
+    "engine_series": [
+      "ISX"
+    ],
+    "parts": {
+      "4309129": {
+        "oem_num": "4309129",
+        "name": "NOx Sensor",
+        "group": "Emissions",
+        "engine_family": "ISX",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "4954200": {
+        "oem_num": "4954200",
+        "name": "Fuel Injector",
+        "group": "Fuel",
+        "engine_family": "ISX",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "2881753": {
+        "oem_num": "2881753",
+        "name": "Turbocharger",
+        "group": "Air",
+        "engine_family": "ISX",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "4376357": {
+        "oem_num": "4376357",
+        "name": "Water Pump",
+        "group": "Cooling",
+        "engine_family": "ISX",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      }
+    }
+  },
+  "detroit_diesel": {
+    "engine_series": [
+      "DD15"
+    ],
+    "parts": {
+      "A0091530628": {
+        "oem_num": "A0091530628",
+        "name": "NOx Sensor",
+        "group": "Emissions",
+        "engine_family": "DD15",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "A4722001601": {
+        "oem_num": "A4722001601",
+        "name": "Water Pump",
+        "group": "Cooling",
+        "engine_family": "DD15",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "EA4720700587": {
+        "oem_num": "EA4720700587",
+        "name": "Fuel Injector",
+        "group": "Fuel",
+        "engine_family": "DD15",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "A4710902552": {
+        "oem_num": "A4710902552",
+        "name": "Fuel Filter",
+        "group": "Fuel",
+        "engine_family": "DD15",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      }
+    }
+  },
+  "paccar": {
+    "engine_series": [
+      "MX-13"
+    ],
+    "parts": {
+      "2293961": {
+        "oem_num": "2293961",
+        "name": "NOx Sensor",
+        "group": "Emissions",
+        "engine_family": "MX-13",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "1931652": {
+        "oem_num": "1931652",
+        "name": "Turbo Actuator",
+        "group": "Air",
+        "engine_family": "MX-13",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "2105151": {
+        "oem_num": "2105151",
+        "name": "Oil Filter Module",
+        "group": "Lubrication",
+        "engine_family": "MX-13",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "1831541": {
+        "oem_num": "1831541",
+        "name": "Fan Clutch",
+        "group": "Cooling",
+        "engine_family": "MX-13",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      }
+    }
+  },
+  "international_navistar": {
+    "engine_series": [
+      "DT466",
+      "MAXXFORCE 13",
+      "A26"
+    ],
+    "parts": {
+      "1848410C94": {
+        "oem_num": "1848410C94",
+        "name": "ICP Sensor",
+        "group": "Sensors",
+        "engine_family": "DT466",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "1876105C95": {
+        "oem_num": "1876105C95",
+        "name": "EGR Valve",
+        "group": "Emissions",
+        "engine_family": "MAXXFORCE 13",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "3007353C92": {
+        "oem_num": "3007353C92",
+        "name": "Oil Cooler",
+        "group": "Cooling",
+        "engine_family": "A26",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      },
+      "1830669C92": {
+        "oem_num": "1830669C92",
+        "name": "IPR Valve",
+        "group": "Fuel",
+        "engine_family": "DT466",
+        "source": "local_csv",
+        "confidence": "local_match_verify_by_vin_or_engine_serial"
+      }
+    }
+  }
+}
